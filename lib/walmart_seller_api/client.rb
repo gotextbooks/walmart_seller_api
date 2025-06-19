@@ -100,14 +100,18 @@ module WalmartSellerApi
 
     def authenticate
       auth_response = self.class.post(configuration.auth_url, {
+        basic_auth: {
+          username: configuration.client_id,
+          password: configuration.client_secret
+        },
         headers: {
           "Content-Type" => "application/x-www-form-urlencoded",
-          "Accept" => "application/json"
+          "Accept" => "application/json",
+          "WM_QOS.CORRELATION_ID" => correlation_id,
+          "WM_SVC.NAME" => "Walmart Marketplace"
         },
         body: {
-          grant_type: "client_credentials",
-          client_id: configuration.client_id,
-          client_secret: configuration.client_secret
+          grant_type: "client_credentials"
         }
       })
 
@@ -141,4 +145,4 @@ module WalmartSellerApi
       configuration.logger.debug "Response Body: #{response.body}" if response.body
     end
   end
-end 
+end
