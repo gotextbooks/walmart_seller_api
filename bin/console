@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "walmart_seller_api"
+require "irb"
+
+# Load environment variables if .env file exists
+if File.exist?(".env")
+  require "dotenv"
+  Dotenv.load
+end
+
+# Configure the gem for console use
+WalmartSellerApi.configure do |config|
+  config.client_id = ENV["WALMART_CLIENT_ID"] || "your_client_id"
+  config.client_secret = ENV["WALMART_CLIENT_SECRET"] || "your_client_secret"
+  config.environment = (ENV["WALMART_ENVIRONMENT"] || "sandbox").to_sym
+  config.logger = Logger.new(STDOUT) if ENV["WALMART_DEBUG"]
+end
+
+puts "Walmart Seller API Console"
+puts "Available resources:"
+puts "  - WalmartSellerApi.inventory"
+puts "  - WalmartSellerApi.orders"
+puts "  - WalmartSellerApi.items"
+puts "  - WalmartSellerApi.shipping"
+puts "  - WalmartSellerApi.reports"
+puts "  - WalmartSellerApi.client"
+puts ""
+
+IRB.start(__FILE__) 
