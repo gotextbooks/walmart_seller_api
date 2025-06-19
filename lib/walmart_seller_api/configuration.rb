@@ -26,7 +26,7 @@ module WalmartSellerApi
       when :production
         "https://marketplace.walmartapis.com"
       when :sandbox
-        "https://marketplace.walmartapis.com"
+        "https://sandbox.walmartapis.com"
       else
         raise ArgumentError, "Invalid environment: #{environment}. Must be :sandbox or :production"
       end
@@ -37,7 +37,7 @@ module WalmartSellerApi
       when :production
         "https://marketplace.walmartapis.com/v3/token"
       when :sandbox
-        "https://marketplace.walmartapis.com/v3/token"
+        "https://sandbox.walmartapis.com/v3/token"
       else
         raise ArgumentError, "Invalid environment: #{environment}. Must be :sandbox or :production"
       end
