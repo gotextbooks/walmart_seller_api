@@ -36,7 +36,7 @@ module WalmartSellerApi
 
     def setup_http_client
       self.class.base_uri configuration.base_url
-      self.class.timeout configuration.timeout
+      self.class.default_timeout configuration.timeout
       self.class.open_timeout configuration.open_timeout
       self.class.headers default_headers
     end
