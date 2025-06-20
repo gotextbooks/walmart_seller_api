@@ -19,18 +19,13 @@ require_relative "walmart_seller_api/resources/reports"
 require_relative "walmart_seller_api/resources/feeds"
 
 module WalmartSellerApi
-  extend Dry::Configurable
-
-  setting :client_id
-  setting :client_secret
-  setting :environment, default: :sandbox
-  setting :timeout, default: 30
-  setting :open_timeout, default: 10
-  setting :logger
-
   class << self
     def configure
       yield config
+    end
+
+    def config
+      @config ||= Configuration.new
     end
 
     def client
@@ -61,4 +56,4 @@ module WalmartSellerApi
       @feeds ||= Resources::Feeds.new(client)
     end
   end
-end 
+end

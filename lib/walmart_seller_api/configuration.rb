@@ -2,13 +2,16 @@
 
 module WalmartSellerApi
   class Configuration
-    attr_accessor :client_id, :client_secret, :environment, :timeout, :open_timeout, :logger
+    include Dry::Configurable
 
-    def initialize
-      @environment = :sandbox
-      @timeout = 30
-      @open_timeout = 10
-    end
+    setting :client_id
+    setting :client_secret
+    setting :environment, default: :sandbox
+    setting :timeout, default: 30
+    setting :open_timeout, default: 10
+    setting :logger
+
+    delegate_missing_to :config
 
     def production?
       environment == :production
@@ -23,7 +26,7 @@ module WalmartSellerApi
       when :production
         "https://marketplace.walmartapis.com"
       when :sandbox
-        "https://marketplace.walmartapis.com"
+        "https://sandbox.walmartapis.com"
       else
         raise ArgumentError, "Invalid environment: #{environment}. Must be :sandbox or :production"
       end
@@ -34,7 +37,7 @@ module WalmartSellerApi
       when :production
         "https://marketplace.walmartapis.com/v3/token"
       when :sandbox
-        "https://marketplace.walmartapis.com/v3/token"
+        "https://sandbox.walmartapis.com/v3/token"
       else
         raise ArgumentError, "Invalid environment: #{environment}. Must be :sandbox or :production"
       end
