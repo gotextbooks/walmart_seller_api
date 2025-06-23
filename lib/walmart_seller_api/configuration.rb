@@ -4,12 +4,19 @@ module WalmartSellerApi
   class Configuration
     include Dry::Configurable
 
+    # OAuth 2.0
     setting :client_id
     setting :client_secret
+
+    # HTTP client
     setting :environment, default: :sandbox
     setting :timeout, default: 30
     setting :open_timeout, default: 10
     setting :logger
+
+    # Cache
+    setting :token_expiry_buffer_seconds, default: 100
+    setting :cache, default: ActiveSupport::Cache::MemoryStore.new
 
     delegate_missing_to :config
 
@@ -49,4 +56,4 @@ module WalmartSellerApi
       raise ArgumentError, "Invalid environment: #{environment}" unless %i[sandbox production].include?(environment)
     end
   end
-end 
+end

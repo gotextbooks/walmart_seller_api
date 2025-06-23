@@ -95,7 +95,17 @@ module WalmartSellerApi
     end
 
     def access_token
-      @access_token ||= authenticate
+      configuration.cache.fetch(cache_key) do |_key, options|
+        response = authenticate
+        token_expiry_buffer_seconds = configuration.token_expiry_buffer_seconds
+        options.expires_in = response["expires_in"] - token_expiry_buffer_seconds
+
+        response["access_token"]
+      end
+    end
+
+    def cache_key
+      "walmart_seller_api:access_token:#{configuration.client_id}"
     end
 
     def authenticate
@@ -116,8 +126,7 @@ module WalmartSellerApi
       })
 
       if auth_response.success?
-        parsed_response = JSON.parse(auth_response.body)
-        parsed_response["access_token"]
+        JSON.parse(auth_response.body)
       else
         raise AuthenticationError, "Failed to authenticate: #{auth_response.body}"
       end
