@@ -6,15 +6,14 @@ module WalmartSellerApi
       # Submit a new feed
       def submit_feed(feed_type, file_path, params = {})
         path = "/v3/feeds"
-        file = File.open(file_path, 'rb')
+        file = File.open(file_path)
+        query = {
+          feedType: feed_type
+        }
         body = {
-          feedType: feed_type,
           file: file
         }.merge(params)
-        headers = {
-          'Content-Type' => 'multipart/form-data'
-        }
-        post(path, body: body, headers: headers)
+        post(path, query: query, body: body)
       ensure
         file.close if file
       end
@@ -44,4 +43,4 @@ module WalmartSellerApi
       end
     end
   end
-end 
+end
