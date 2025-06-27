@@ -3,14 +3,6 @@
 module WalmartSellerApi
   class Error < StandardError; end
 
-  class AuthenticationError < Error; end
-  class AuthorizationError < Error; end
-  class RateLimitError < Error; end
-  class ValidationError < Error; end
-  class NotFoundError < Error; end
-  class ServerError < Error; end
-  class NetworkError < Error; end
-
   class ApiError < Error
     attr_reader :status_code, :response_body, :response_headers
 
@@ -28,25 +20,34 @@ module WalmartSellerApi
 
       error_message = extract_error_message(response_body)
 
-      case status_code
-      when 400
-        ValidationError.new(error_message, status_code, response_body, response_headers)
-      when 401
-        AuthenticationError.new(error_message, status_code, response_body, response_headers)
-      when 403
-        AuthorizationError.new(error_message, status_code, response_body, response_headers)
-      when 404
-        NotFoundError.new(error_message, status_code, response_body, response_headers)
-      when 429
-        RateLimitError.new(error_message, status_code, response_body, response_headers)
-      when 500..599
-        ServerError.new(error_message, status_code, response_body, response_headers)
-      else
-        ApiError.new(error_message, status_code, response_body, response_headers)
-      end
+      klass =
+        case status_code
+        when 400
+          ValidationError
+        when 401
+          AuthenticationError
+        when 403
+          AuthorizationError
+        when 404
+          NotFoundError
+        when 429
+          RateLimitError
+        when 500..599
+          ServerError
+        else
+          self
+        end
+
+      klass.new(error_message, status_code, response_body, response_headers)
     end
 
-    private
+    class AuthenticationError < ApiError; end
+    class AuthorizationError < ApiError; end
+    class RateLimitError < ApiError; end
+    class ValidationError < ApiError; end
+    class NotFoundError < ApiError; end
+    class ServerError < ApiError; end
+    class NetworkError < ApiError; end
 
     def self.extract_error_message(response_body)
       return "Unknown error" if response_body.blank?
@@ -63,4 +64,4 @@ module WalmartSellerApi
       end
     end
   end
-end 
+end
