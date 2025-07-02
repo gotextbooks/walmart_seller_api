@@ -28,10 +28,6 @@ module WalmartSellerApi
       @config ||= Configuration.new
     end
 
-    def client
-      @client ||= Client.new
-    end
-
     def inventory
       @inventory ||= Resources::Inventory.new(client)
     end
@@ -54,6 +50,18 @@ module WalmartSellerApi
 
     def feeds
       @feeds ||= Resources::Feeds.new(client)
+    end
+
+    def reset!
+      instance_variables.each do |ivar|
+        instance_variable_set(ivar, nil) unless ivar == :@config
+      end
+    end
+
+    private
+
+    def client
+      @client ||= Client.new
     end
   end
 end
