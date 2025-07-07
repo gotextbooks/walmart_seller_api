@@ -19,9 +19,14 @@ module WalmartSellerApi
       end
 
       # Get feed status by feedId
-      def get_feed_status(feed_id)
+      def get_feed_status(feed_id, options = {})
         path = "/v3/feeds/#{feed_id}"
-        get(path)
+        query = build_query_params(
+          limit: options[:limit],
+          offset: options[:offset],
+          includeDetails: options[:include_details]
+        )
+        get(path, query: query)
       end
 
       # Get feed results by feedId
