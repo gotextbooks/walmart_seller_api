@@ -3,11 +3,11 @@
 module WalmartSellerApi
   module Resources
     class Orders < Base
-      def get_orders(limit = 10, offset = 0, status = nil, created_start_date = nil, created_end_date = nil)
+      def get_orders(limit: 10, next_cursor: nil, status: nil, created_start_date: nil, created_end_date: nil)
         path = "/v3/orders"
         params = build_query_params({
           limit: limit,
-          offset: offset,
+          nextCursor: next_cursor,
           status: status,
           createdStartDate: created_start_date,
           createdEndDate: created_end_date
@@ -121,4 +121,4 @@ module WalmartSellerApi
       end
     end
   end
-end 
+end
