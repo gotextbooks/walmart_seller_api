@@ -21,59 +21,18 @@ module WalmartSellerApi
         get(path)
       end
 
-      def acknowledge_order(order_id)
+      def acknowledge_order(order_id, body)
         path = "/v3/orders/#{order_id}/acknowledge"
-        post(path)
-      end
-
-      def cancel_order(order_id, reason)
-        path = "/v3/orders/#{order_id}/cancel"
-        body = {
-          orderLines: [
-            {
-              orderLineNumber: "1",
-              orderLineStatuses: [
-                {
-                  status: "Cancelled",
-                  cancellationReason: reason,
-                  statusQuantity: {
-                    amount: 1,
-                    unit: "EACH"
-                  }
-                }
-              ]
-            }
-          ]
-        }
-
         post(path, body: build_request_body(body))
       end
 
-      def ship_order(order_id, order_lines)
-        path = "/v3/orders/#{order_id}/shipping"
-        body = {
-          orderLines: order_lines.map do |line|
-            {
-              orderLineNumber: line[:order_line_number],
-              orderLineStatuses: [
-                {
-                  status: "Shipped",
-                  statusQuantity: {
-                    amount: line[:quantity],
-                    unit: "EACH"
-                  },
-                  trackingInfo: {
-                    shipDateTime: line[:ship_date_time],
-                    carrierName: line[:carrier_name],
-                    methodCode: line[:method_code],
-                    carrierShipmentId: line[:tracking_number]
-                  }
-                }
-              ]
-            }
-          end
-        }
+      def cancel_order(order_id, body)
+        path = "/v3/orders/#{order_id}/cancel"
+        post(path, body: build_request_body(body))
+      end
 
+      def ship_order(order_id, body)
+        path = "/v3/orders/#{order_id}/shipping"
         post(path, body: build_request_body(body))
       end
 
