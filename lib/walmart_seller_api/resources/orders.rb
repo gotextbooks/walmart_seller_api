@@ -21,9 +21,9 @@ module WalmartSellerApi
         get(path)
       end
 
-      def acknowledge_order(order_id)
+      def acknowledge_order(order_id, body)
         path = "/v3/orders/#{order_id}/acknowledge"
-        post(path)
+        post(path, body: build_request_body(body))
       end
 
       def cancel_order(order_id, body)
