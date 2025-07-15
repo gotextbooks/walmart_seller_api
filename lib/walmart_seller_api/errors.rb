@@ -54,14 +54,18 @@ module WalmartSellerApi
 
       begin
         parsed = JSON.parse(response_body)
-        if parsed.is_a?(Hash)
-          parsed["error"] || parsed["message"] || parsed["description"] || "Unknown error"
-        else
-          "Unknown error"
-        end
+        error_message = find_error_message(parsed) if parsed.is_a?(Hash)
+        error_message || "Unknown error"
       rescue JSON::ParserError
         response_body
       end
+    end
+
+    private_class_method def self.find_error_message(data)
+      data.dig('errors', 'error', 'description') ||
+        data["error"] ||
+        data["message"] ||
+        data["description"]
     end
   end
 end
