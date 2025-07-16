@@ -45,6 +45,7 @@ module WalmartSellerApi
       {
         "Content-Type" => "application/json",
         "Accept" => "application/json",
+        "WM_SEC.ACCESS_TOKEN" => access_token,
         "WM_QOS.CORRELATION_ID" => correlation_id,
         "WM_SVC.NAME" => "Walmart Marketplace"
       }
@@ -58,19 +59,11 @@ module WalmartSellerApi
 
       log_request(method, url, headers, body, query)
 
-      opts = {
+      response = self.class.send(method, url, {
+        headers: headers,
         body: body,
         query: query
-      }
-
-      if basic_auth = options.delete(:basic_auth)
-        opts[:basic_auth] = basic_auth
-      else
-        headers["WM_SEC.ACCESS_TOKEN"] = access_token
-      end
-
-      opts[:headers] = headers
-      response = self.class.send(method, url, opts)
+      })
 
       log_response(response)
       handle_response(response)
@@ -106,20 +99,30 @@ module WalmartSellerApi
     end
 
     def authenticate
-      response = post("/v3/token", {
+      auth_response = self.class.post(configuration.auth_url, {
         basic_auth: {
           username: configuration.client_id,
           password: configuration.client_secret
         },
         headers: {
-          "Content-Type" => "application/x-www-form-urlencoded"
+          "Content-Type" => "application/x-www-form-urlencoded",
+          "Accept" => "application/json",
+          "WM_QOS.CORRELATION_ID" => correlation_id,
+          "WM_SVC.NAME" => "Walmart Marketplace"
         },
         body: {
           grant_type: "client_credentials"
         }
       })
 
-      response["access_token"]
+      if auth_response.success?
+        parsed_response = JSON.parse(auth_response.body)
+        parsed_response["access_token"]
+      else
+        raise AuthenticationError, "Failed to authenticate: #{auth_response.body}"
+      end
+    rescue JSON::ParserError
+      raise AuthenticationError, "Invalid authentication response"
     end
 
     def correlation_id
