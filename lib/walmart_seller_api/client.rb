@@ -95,41 +95,45 @@ module WalmartSellerApi
     end
 
     def access_token
-      @access_token ||= authenticate
+      @access_token ||= begin
+        data = authenticate
+        data["access_token"]
+      end
     end
 
     def authenticate
-      auth_response = self.class.post(configuration.auth_url, {
+      url = configuration.auth_url
+
+      headers = {
+        "Content-Type" => "application/x-www-form-urlencoded",
+        "Accept" => "application/json",
+        "WM_QOS.CORRELATION_ID" => correlation_id,
+        "WM_SVC.NAME" => "Walmart Marketplace"
+      }
+      body = {
+        grant_type: "client_credentials"
+      }
+
+      log_request(:post, url, headers, body)
+
+      response = self.class.post(url, {
         basic_auth: {
           username: configuration.client_id,
           password: configuration.client_secret
         },
-        headers: {
-          "Content-Type" => "application/x-www-form-urlencoded",
-          "Accept" => "application/json",
-          "WM_QOS.CORRELATION_ID" => correlation_id,
-          "WM_SVC.NAME" => "Walmart Marketplace"
-        },
-        body: {
-          grant_type: "client_credentials"
-        }
+        headers: headers,
+        body: body
       })
 
-      if auth_response.success?
-        parsed_response = JSON.parse(auth_response.body)
-        parsed_response["access_token"]
-      else
-        raise AuthenticationError, "Failed to authenticate: #{auth_response.body}"
-      end
-    rescue JSON::ParserError
-      raise AuthenticationError, "Invalid authentication response"
+      log_response(response)
+      handle_response(response)
     end
 
     def correlation_id
       SecureRandom.uuid
     end
 
-    def log_request(method, url, headers, body, query)
+    def log_request(method, url, headers, body, query = nil)
       return unless configuration.logger
 
       configuration.logger.info "Walmart API Request: #{method.upcase} #{url}"
