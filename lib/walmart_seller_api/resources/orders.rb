@@ -36,29 +36,8 @@ module WalmartSellerApi
         post(path, body: build_request_body(body))
       end
 
-      def refund_order(order_id, refund_lines)
+      def refund_order(order_id, body)
         path = "/v3/orders/#{order_id}/refund"
-        body = {
-          orderLines: refund_lines.map do |line|
-            {
-              orderLineNumber: line[:order_line_number],
-              orderLineStatuses: [
-                {
-                  status: "Refunded",
-                  statusQuantity: {
-                    amount: line[:quantity],
-                    unit: "EACH"
-                  },
-                  refund: {
-                    refundComments: line[:refund_comments],
-                    refundCharges: line[:refund_charges]
-                  }
-                }
-              ]
-            }
-          end
-        }
-
         post(path, body: build_request_body(body))
       end
 
