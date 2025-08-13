@@ -8,6 +8,7 @@ require "dry-configurable"
 
 require_relative "walmart_seller_api/version"
 require_relative "walmart_seller_api/configuration"
+require_relative "walmart_seller_api/token"
 require_relative "walmart_seller_api/client"
 require_relative "walmart_seller_api/errors"
 require_relative "walmart_seller_api/resources/base"

@@ -95,10 +95,9 @@ module WalmartSellerApi
     end
 
     def access_token
-      @access_token ||= begin
-        data = authenticate
-        data["access_token"]
-      end
+      @token ||= authenticate
+      @token = authenticate if @token.expired?
+      @token.value
     end
 
     def authenticate
@@ -126,7 +125,9 @@ module WalmartSellerApi
       })
 
       log_response(response)
-      handle_response(response)
+      data = handle_response(response)
+
+      Token.new(data)
     end
 
     def correlation_id
