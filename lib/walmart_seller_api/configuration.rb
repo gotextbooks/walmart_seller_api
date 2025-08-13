@@ -10,6 +10,7 @@ module WalmartSellerApi
     setting :timeout, default: 30
     setting :open_timeout, default: 10
     setting :logger
+    setting :expiration_offset_seconds, default: 60
 
     delegate_missing_to :config
 
@@ -49,4 +50,4 @@ module WalmartSellerApi
       raise ArgumentError, "Invalid environment: #{environment}" unless %i[sandbox production].include?(environment)
     end
   end
-end 
+end
