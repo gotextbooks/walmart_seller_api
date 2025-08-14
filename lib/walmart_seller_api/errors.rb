@@ -62,10 +62,32 @@ module WalmartSellerApi
     end
 
     private_class_method def self.find_error_message(data)
-      data.dig('errors', 'error', 'description') ||
-        data["error"] ||
-        data["message"] ||
-        data["description"]
+      message = nil
+
+      [data.dig("errors", "error"), data["error"], data].each do |error|
+        message = form_error_message(error)
+        break if message.present?
+      end
+
+      message
+    end
+
+    private_class_method def self.form_error_message(error)
+      message =
+        if error.is_a?(Array)
+          error.map { |e| error_message(e) }.compact.to_sentence
+        else
+          error_message(error)
+        end
+
+      message.presence
+    end
+
+    private_class_method def self.error_message(data)
+      return data if data.is_a?(String)
+      return unless data.is_a?(Hash)
+
+      data["message"] || data["description"] || data["info"]
     end
   end
 end
