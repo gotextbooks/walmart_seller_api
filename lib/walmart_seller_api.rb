@@ -19,6 +19,7 @@ require_relative "walmart_seller_api/resources/shipping"
 require_relative "walmart_seller_api/resources/reports"
 require_relative "walmart_seller_api/resources/feeds"
 require_relative "walmart_seller_api/resources/prices"
+require_relative "walmart_seller_api/resources/returns"
 
 module WalmartSellerApi
   class << self
@@ -56,6 +57,10 @@ module WalmartSellerApi
 
     def prices
       @prices ||= Resources::Prices.new(client)
+    end
+
+    def returns
+      @returns ||= Resources::Returns.new(client)
     end
 
     def reset!
