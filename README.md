@@ -1,7 +1,5 @@
 # Walmart Seller API Ruby SDK
 
-⚠️ **WARNING: This is an AI-generated SDK and has not yet been reviewed or tested. Use at your own risk.**
-
 A comprehensive Ruby SDK for interacting with Walmart's Seller API, providing easy access to inventory management, order processing, and marketplace operations.
 
 ## Features
