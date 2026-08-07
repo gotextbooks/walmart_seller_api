@@ -3,10 +3,11 @@
 module WalmartSellerApi
   module Resources
     class Items < Base
-      def get_items(limit = 10, offset = 0, lifecycle_status = nil)
+      def get_items(limit = 10, next_cursor = nil, offset = 0, lifecycle_status = nil)
         path = "/v3/items"
         params = build_query_params({
           limit: limit,
+          nextCursor: next_cursor,
           offset: offset,
           lifecycleStatus: lifecycle_status
         })
