@@ -23,6 +23,7 @@ module WalmartSellerApi
         path = "/v3/feeds/#{feed_id}"
         query = build_query_params(
           limit: options[:limit],
+          nextCursor: options[:next_cursor],
           offset: options[:offset],
           includeDetails: options[:include_details]
         )

@@ -39,6 +39,12 @@ RSpec.describe WalmartSellerApi do
     end
   end
 
+  describe ".feeds" do
+    it "returns feeds resource" do
+      expect(::WalmartSellerApi.feeds).to be_a(WalmartSellerApi::Resources::Feeds)
+    end
+  end
+
   describe ".items" do
     it "returns an items resource" do
       expect(WalmartSellerApi.items).to be_a(WalmartSellerApi::Resources::Items)
